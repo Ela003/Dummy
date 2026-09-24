@@ -1,0 +1,1617 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRYPTEX // Encoding Lab</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#03040a;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    overflow-x:hidden;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-5;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(0,255,255,.12),transparent 25%),
+        radial-gradient(circle at 80% 30%,rgba(140,0,255,.13),transparent 25%),
+        radial-gradient(circle at 50% 90%,rgba(0,255,120,.08),transparent 30%);
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    z-index:-4;
+    background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:50px 50px;
+    transform:perspective(600px) rotateX(60deg) scale(2);
+    transform-origin:center bottom;
+    animation:gridMove 12s linear infinite;
+}
+
+@keyframes gridMove{
+    from{background-position:0 0,0 0;}
+    to{background-position:0 500px,500px 0;}
+}
+
+#particles{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    pointer-events:none;
+}
+
+/* =========================
+   SCROLL BAR
+========================= */
+
+#scrollProgress{
+    position:fixed;
+    top:0;
+    left:0;
+    height:4px;
+    width:0%;
+    background:linear-gradient(90deg,#00ffff,#8b5cff,#ff00c8);
+    z-index:9999;
+    box-shadow:0 0 20px #00ffff;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+nav{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(1100px,92%);
+    padding:14px 20px;
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:50px;
+    background:rgba(5,7,15,.65);
+    backdrop-filter:blur(20px);
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 0 40px rgba(0,255,255,.08);
+}
+
+.logo{
+    font-weight:900;
+    letter-spacing:3px;
+    color:#00ffff;
+    text-shadow:0 0 15px #00ffff;
+}
+
+nav a{
+    color:#aaa;
+    text-decoration:none;
+    margin-left:20px;
+    font-size:13px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#fff;
+    text-shadow:0 0 15px #00ffff;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:120px 20px 60px;
+    overflow:hidden;
+}
+
+.hero-content{
+    max-width:1000px;
+    position:relative;
+    z-index:2;
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 16px;
+    border:1px solid rgba(0,255,255,.35);
+    border-radius:50px;
+    color:#00ffff;
+    background:rgba(0,255,255,.05);
+    letter-spacing:3px;
+    font-size:11px;
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        box-shadow:0 0 30px rgba(0,255,255,.35);
+    }
+}
+
+.hero h1{
+    margin-top:25px;
+    font-size:clamp(55px,10vw,140px);
+    line-height:.85;
+    font-weight:1000;
+    letter-spacing:-7px;
+    text-transform:uppercase;
+    animation:heroReveal 1.5s ease forwards;
+}
+
+@keyframes heroReveal{
+    from{
+        opacity:0;
+        transform:translateY(100px) scale(.7) rotateX(60deg);
+        filter:blur(20px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+        filter:none;
+    }
+}
+
+.gradient{
+    background:linear-gradient(
+        90deg,
+        #fff,
+        #00ffff,
+        #8b5cff,
+        #ff00c8,
+        #fff
+    );
+    background-size:300%;
+    -webkit-background-clip:text;
+    color:transparent;
+    animation:gradientMove 5s linear infinite;
+}
+
+@keyframes gradientMove{
+    to{background-position:300%;}
+}
+
+.hero p{
+    max-width:650px;
+    margin:35px auto;
+    color:#aaa;
+    line-height:1.8;
+    font-size:17px;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    position:relative;
+    padding:15px 25px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.2);
+    color:#fff;
+    background:rgba(255,255,255,.05);
+    cursor:pointer;
+    text-decoration:none;
+    overflow:hidden;
+    transition:.4s;
+}
+
+.btn::before{
+    content:"";
+    position:absolute;
+    width:0;
+    height:0;
+    border-radius:50%;
+    background:#00ffff;
+    left:var(--x);
+    top:var(--y);
+    transform:translate(-50%,-50%);
+    transition:.5s;
+    z-index:-1;
+}
+
+.btn:hover::before{
+    width:300px;
+    height:300px;
+}
+
+.btn:hover{
+    color:#000;
+    transform:translateY(-5px) scale(1.05);
+    box-shadow:0 15px 40px rgba(0,255,255,.25);
+}
+
+/* =========================
+   3D CORE
+========================= */
+
+.core{
+    position:absolute;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    border:1px solid rgba(0,255,255,.25);
+    box-shadow:
+        0 0 80px rgba(0,255,255,.15),
+        inset 0 0 80px rgba(140,0,255,.1);
+    animation:spin 12s linear infinite;
+}
+
+.core::before,
+.core::after{
+    content:"";
+    position:absolute;
+    inset:25px;
+    border-radius:50%;
+    border:1px solid rgba(140,92,255,.3);
+    transform:rotateX(65deg);
+}
+
+.core::after{
+    transform:rotateY(65deg);
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+section{
+    min-height:100vh;
+    padding:130px 7%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.section-title{
+    font-size:clamp(40px,7vw,90px);
+    font-weight:1000;
+    margin-bottom:15px;
+    letter-spacing:-4px;
+}
+
+.section-subtitle{
+    color:#777;
+    max-width:700px;
+    line-height:1.7;
+    margin-bottom:60px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.card{
+    min-height:250px;
+    padding:30px;
+    border:1px solid rgba(255,255,255,.1);
+    background:linear-gradient(
+        145deg,
+        rgba(255,255,255,.07),
+        rgba(255,255,255,.015)
+    );
+    border-radius:25px;
+    position:relative;
+    overflow:hidden;
+    transition:.6s cubic-bezier(.2,.8,.2,1);
+    transform-style:preserve-3d;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    width:200px;
+    height:200px;
+    background:#00ffff;
+    filter:blur(100px);
+    opacity:.08;
+    right:-80px;
+    bottom:-80px;
+}
+
+.card:hover{
+    transform:
+        perspective(1000px)
+        rotateX(5deg)
+        rotateY(-7deg)
+        translateY(-15px)
+        scale(1.02);
+    border-color:rgba(0,255,255,.4);
+    box-shadow:0 30px 80px rgba(0,0,0,.4);
+}
+
+.card-number{
+    font-size:12px;
+    color:#00ffff;
+    letter-spacing:3px;
+}
+
+.card h3{
+    font-size:30px;
+    margin:25px 0 15px;
+}
+
+.card p{
+    color:#888;
+    line-height:1.7;
+}
+
+/* =========================
+   TERMINAL
+========================= */
+
+.terminal{
+    background:#020307;
+    border:1px solid #20242f;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 30px 100px rgba(0,0,0,.5);
+}
+
+.terminal-top{
+    padding:14px;
+    border-bottom:1px solid #20242f;
+    display:flex;
+    gap:7px;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#555;
+}
+
+.terminal-body{
+    padding:25px;
+    font-family:monospace;
+    color:#00ff99;
+    min-height:180px;
+}
+
+.cursor{
+    display:inline-block;
+    width:8px;
+    height:18px;
+    background:#00ff99;
+    animation:blink .7s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0;}
+}
+
+/* =========================
+   TOOL BOX
+========================= */
+
+.tool{
+    max-width:1000px;
+    margin:auto;
+    width:100%;
+}
+
+textarea,
+input{
+    width:100%;
+    padding:18px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.12);
+    background:#080a12;
+    color:#fff;
+    outline:none;
+    font-size:15px;
+    transition:.3s;
+}
+
+textarea{
+    min-height:180px;
+    resize:vertical;
+}
+
+textarea:focus,
+input:focus{
+    border-color:#00ffff;
+    box-shadow:0 0 30px rgba(0,255,255,.1);
+}
+
+.tool-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.tool-buttons{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:15px;
+}
+
+.result{
+    margin-top:20px;
+    padding:20px;
+    min-height:80px;
+    border-radius:15px;
+    border:1px solid rgba(0,255,255,.15);
+    background:#05070d;
+    color:#00ffff;
+    font-family:monospace;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+/* =========================
+   RANDOM SEQUENCE
+========================= */
+
+.sequence{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+    gap:12px;
+    margin-top:25px;
+}
+
+.number{
+    padding:20px 10px;
+    text-align:center;
+    border-radius:15px;
+    background:#080b13;
+    border:1px solid rgba(255,255,255,.08);
+    font-family:monospace;
+    font-size:20px;
+    color:#00ffff;
+    animation:numberPop .5s both;
+}
+
+@keyframes numberPop{
+    from{
+        opacity:0;
+        transform:translateY(40px) rotateX(90deg) scale(.5);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.hash{
+    margin-top:20px;
+    padding:20px;
+    background:#05070d;
+    border-radius:15px;
+    border:1px solid rgba(139,92,255,.2);
+    font-family:monospace;
+    word-break:break-all;
+    color:#bb9cff;
+}
+
+/* =========================
+   BIG MARQUEE
+========================= */
+
+.marquee{
+    overflow:hidden;
+    border-top:1px solid rgba(255,255,255,.1);
+    border-bottom:1px solid rgba(255,255,255,.1);
+    padding:25px 0;
+}
+
+.marquee-track{
+    display:flex;
+    width:max-content;
+    animation:marquee 20s linear infinite;
+}
+
+.marquee span{
+    font-size:70px;
+    font-weight:1000;
+    margin-right:50px;
+    color:transparent;
+    -webkit-text-stroke:1px #555;
+}
+
+.marquee span:nth-child(even){
+    color:#00ffff;
+    -webkit-text-stroke:0;
+}
+
+@keyframes marquee{
+    to{transform:translateX(-50%);}
+}
+
+/* =========================
+   SCROLL REVEAL
+========================= */
+
+.reveal{
+    opacity:0;
+    transform:translateY(100px) scale(.9);
+    filter:blur(10px);
+    transition:
+        opacity 1s ease,
+        transform 1s cubic-bezier(.2,.8,.2,1),
+        filter 1s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:none;
+    filter:none;
+}
+
+.reveal-left{
+    opacity:0;
+    transform:translateX(-120px) rotateY(30deg);
+    transition:1s cubic-bezier(.2,.8,.2,1);
+}
+
+.reveal-left.active{
+    opacity:1;
+    transform:none;
+}
+
+.reveal-right{
+    opacity:0;
+    transform:translateX(120px) rotateY(-30deg);
+    transition:1s cubic-bezier(.2,.8,.2,1);
+}
+
+.reveal-right.active{
+    opacity:1;
+    transform:none;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    padding:80px 20px;
+    text-align:center;
+    border-top:1px solid rgba(255,255,255,.1);
+    color:#666;
+}
+
+footer strong{
+    color:#00ffff;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:700px){
+
+    nav{
+        padding:12px 16px;
+    }
+
+    nav .links{
+        display:none;
+    }
+
+    .hero h1{
+        letter-spacing:-3px;
+    }
+
+    section{
+        padding:100px 20px;
+    }
+
+    .tool-row{
+        grid-template-columns:1fr;
+    }
+
+    .core{
+        width:180px;
+        height:180px;
+    }
+
+    .marquee span{
+        font-size:45px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="scrollProgress"></div>
+<div class="grid"></div>
+<canvas id="particles"></canvas>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">CRYPTEX</div>
+
+    <div class="links">
+        <a href="#home">HOME</a>
+        <a href="#base64">BASE64</a>
+        <a href="#random">RANDOM</a>
+        <a href="#about">ABOUT</a>
+    </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero" id="home">
+
+    <div class="core"></div>
+
+    <div class="hero-content">
+
+        <span class="badge">SECURE DATA LAB // ONLINE</span>
+
+        <h1>
+            <span class="gradient">DATA</span><br>
+            MOTION
+        </h1>
+
+        <p>
+            A highly animated browser laboratory for Base64 encoding,
+            decoding, salted random sequences, hashing and interactive
+            data experiments.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#base64" class="btn magnetic">BASE64 LAB</a>
+            <a href="#random" class="btn magnetic">RANDOM LAB</a>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MARQUEE -->
+
+<div class="marquee">
+    <div class="marquee-track">
+        <span>ENCODE</span>
+        <span>DECODE</span>
+        <span>HASH</span>
+        <span>SALT</span>
+        <span>RANDOM</span>
+        <span>SECURE</span>
+        <span>ENCODE</span>
+        <span>DECODE</span>
+        <span>HASH</span>
+        <span>SALT</span>
+        <span>RANDOM</span>
+        <span>SECURE</span>
+    </div>
+</div>
+
+
+<!-- FEATURES -->
+
+<section id="about">
+
+    <h2 class="section-title reveal">
+        DATA<br>
+        <span class="gradient">ENGINE</span>
+    </h2>
+
+    <p class="section-subtitle reveal">
+        Every section is designed as an interactive motion experiment.
+        Scroll through the page and watch the interface react to your movement.
+    </p>
+
+    <div class="cards">
+
+        <div class="card reveal-left">
+            <span class="card-number">01 / ENCODE</span>
+            <h3>Base64</h3>
+            <p>
+                Convert normal text into Base64 representation directly
+                inside your browser.
+            </p>
+        </div>
+
+        <div class="card reveal">
+            <span class="card-number">02 / DECODE</span>
+            <h3>Reverse</h3>
+            <p>
+                Decode Base64 strings back into readable UTF-8 text.
+            </p>
+        </div>
+
+        <div class="card reveal-right">
+            <span class="card-number">03 / RANDOM</span>
+            <h3>Sequence</h3>
+            <p>
+                Generate cryptographically strong random numbers using
+                the browser Web Crypto API.
+            </p>
+        </div>
+
+        <div class="card reveal-left">
+            <span class="card-number">04 / SALT</span>
+            <h3>SHA-256</h3>
+            <p>
+                Generate a random salt and calculate a salted SHA-256
+                digest completely in the browser.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- TERMINAL -->
+
+<section>
+
+    <div class="terminal reveal">
+
+        <div class="terminal-top">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="terminal-body">
+            <div>&gt; initializing CRYPTEX engine...</div>
+            <div>&gt; loading Web Crypto API...</div>
+            <div>&gt; generating secure environment...</div>
+            <div>&gt; status: <strong>ONLINE</strong></div>
+            <div>&gt; <span id="terminalText"></span><span class="cursor"></span></div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- BASE64 -->
+
+<section id="base64">
+
+    <h2 class="section-title reveal">
+        BASE64<br>
+        <span class="gradient">LAB</span>
+    </h2>
+
+    <p class="section-subtitle reveal">
+        Encode or decode text instantly. UTF-8 characters such as Tamil,
+        emojis and other Unicode text are supported.
+    </p>
+
+    <div class="tool reveal">
+
+        <textarea id="baseInput"
+        placeholder="Enter text or Base64 data here..."></textarea>
+
+        <div class="tool-buttons">
+
+            <button class="btn magnetic" onclick="encodeBase64()">
+                ENCODE
+            </button>
+
+            <button class="btn magnetic" onclick="decodeBase64()">
+                DECODE
+            </button>
+
+            <button class="btn magnetic" onclick="clearBase64()">
+                CLEAR
+            </button>
+
+            <button class="btn magnetic" onclick="copyResult('baseResult')">
+                COPY
+            </button>
+
+        </div>
+
+        <div class="result" id="baseResult">
+            Result will appear here...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- RANDOM -->
+
+<section id="random">
+
+    <h2 class="section-title reveal">
+        RANDOM<br>
+        <span class="gradient">SEQUENCE</span>
+    </h2>
+
+    <p class="section-subtitle reveal">
+        Generate a random sequence using the browser's
+        cryptographically secure random number generator.
+    </p>
+
+    <div class="tool reveal">
+
+        <div class="tool-row">
+
+            <div>
+                <label>NUMBER COUNT</label>
+                <input
+                    id="count"
+                    type="number"
+                    value="12"
+                    min="1"
+                    max="100"
+                >
+            </div>
+
+            <div>
+                <label>MIN → MAX</label>
+                <div style="display:flex;gap:10px;">
+                    <input id="min" type="number" value="1">
+                    <input id="max" type="number" value="9999">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tool-buttons">
+
+            <button class="btn magnetic"
+                    onclick="generateSequence()">
+                GENERATE
+            </button>
+
+            <button class="btn magnetic"
+                    onclick="generateSalt()">
+                NEW SALT
+            </button>
+
+            <button class="btn magnetic"
+                    onclick="copyResult('sequenceOutput')">
+                COPY SEQUENCE
+            </button>
+
+        </div>
+
+        <div class="sequence" id="sequenceOutput"></div>
+
+        <div style="margin-top:30px;">
+            <label>GENERATED SALT</label>
+
+            <div class="result" id="saltOutput">
+                Click NEW SALT or GENERATE
+            </div>
+        </div>
+
+        <div style="margin-top:20px;">
+
+            <label>SALTED SHA-256</label>
+
+            <div class="hash" id="hashOutput">
+                Hash will appear here...
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PROCESS -->
+
+<section>
+
+    <h2 class="section-title reveal">
+        HOW IT<br>
+        <span class="gradient">MOVES</span>
+    </h2>
+
+    <div class="cards">
+
+        <div class="card reveal-left">
+            <span class="card-number">STEP 01</span>
+            <h3>INPUT</h3>
+            <p>
+                User enters text or selects random sequence parameters.
+            </p>
+        </div>
+
+        <div class="card reveal">
+            <span class="card-number">STEP 02</span>
+            <h3>PROCESS</h3>
+            <p>
+                JavaScript processes the data locally inside the browser.
+            </p>
+        </div>
+
+        <div class="card reveal-right">
+            <span class="card-number">STEP 03</span>
+            <h3>OUTPUT</h3>
+            <p>
+                The resulting encoded data, decoded text, sequence,
+                salt and hash are displayed with animation.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+    <p>
+        CRYPTEX // Browser Data Laboratory
+    </p>
+
+    <br>
+
+    <p>
+        Built with <strong>HTML + CSS + JavaScript</strong>
+    </p>
+</footer>
+
+
+<script>
+
+/* ==========================================
+   PARTICLES
+========================================== */
+
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+
+function resizeCanvas(){
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener("resize",resizeCanvas);
+
+for(let i=0;i<100;i++){
+
+    particles.push({
+
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+
+        vx:(Math.random()-.5)*.5,
+        vy:(Math.random()-.5)*.5,
+
+        size:Math.random()*2+0.5
+
+    });
+
+}
+
+function animateParticles(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,i)=>{
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if(p.x<0 || p.x>canvas.width)
+            p.vx *= -1;
+
+        if(p.y<0 || p.y>canvas.height)
+            p.vy *= -1;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle="rgba(0,255,255,.45)";
+        ctx.fill();
+
+        for(let j=i+1;j<particles.length;j++){
+
+            const q=particles[j];
+
+            const dx=p.x-q.x;
+            const dy=p.y-q.y;
+
+            const distance=Math.sqrt(dx*dx+dy*dy);
+
+            if(distance<100){
+
+                ctx.beginPath();
+
+                ctx.moveTo(p.x,p.y);
+                ctx.lineTo(q.x,q.y);
+
+                ctx.strokeStyle=
+                    `rgba(0,255,255,${.08*(1-distance/100)})`;
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    });
+
+    requestAnimationFrame(animateParticles);
+
+}
+
+animateParticles();
+
+
+/* ==========================================
+   SCROLL PROGRESS
+========================================== */
+
+window.addEventListener("scroll",()=>{
+
+    const scrollTop=window.scrollY;
+
+    const height=
+        document.documentElement.scrollHeight-
+        window.innerHeight;
+
+    const progress=(scrollTop/height)*100;
+
+    document.getElementById("scrollProgress")
+        .style.width=progress+"%";
+
+});
+
+
+/* ==========================================
+   SCROLL REVEAL
+========================================== */
+
+const observer=new IntersectionObserver(
+
+    entries=>{
+
+        entries.forEach(entry=>{
+
+            if(entry.isIntersecting){
+
+                entry.target.classList.add("active");
+
+            }else{
+
+                /*
+                    Remove the class when leaving the viewport.
+                    This makes the animation play again when
+                    scrolling UP or DOWN.
+                */
+
+                entry.target.classList.remove("active");
+
+            }
+
+        });
+
+    },
+
+    {
+        threshold:.15
+    }
+
+);
+
+document.querySelectorAll(
+    ".reveal,.reveal-left,.reveal-right"
+).forEach(el=>observer.observe(el));
+
+
+/* ==========================================
+   MOUSE PARALLAX
+========================================== */
+
+document.addEventListener("mousemove",(e)=>{
+
+    const x=(e.clientX/window.innerWidth-.5);
+    const y=(e.clientY/window.innerHeight-.5);
+
+    const core=document.querySelector(".core");
+
+    if(core){
+
+        core.style.transform=
+            `translate(${x*40}px,${y*40}px)
+             rotateX(${y*30}deg)
+             rotateY(${x*30}deg)`;
+
+    }
+
+});
+
+
+/* ==========================================
+   MAGNETIC BUTTON
+========================================== */
+
+document.querySelectorAll(".magnetic").forEach(button=>{
+
+    button.addEventListener("mousemove",(e)=>{
+
+        const rect=button.getBoundingClientRect();
+
+        const x=e.clientX-rect.left;
+        const y=e.clientY-rect.top;
+
+        button.style.setProperty("--x",x+"px");
+        button.style.setProperty("--y",y+"px");
+
+        const moveX=(x-rect.width/2)*.15;
+        const moveY=(y-rect.height/2)*.15;
+
+        button.style.transform=
+            `translate(${moveX}px,${moveY}px) scale(1.05)`;
+
+    });
+
+    button.addEventListener("mouseleave",()=>{
+
+        button.style.transform="";
+
+    });
+
+});
+
+
+/* ==========================================
+   BASE64 ENCODE
+========================================== */
+
+function encodeBase64(){
+
+    const input=document.getElementById("baseInput").value;
+
+    try{
+
+        const bytes=new TextEncoder().encode(input);
+
+        let binary="";
+
+        bytes.forEach(byte=>{
+            binary+=String.fromCharCode(byte);
+        });
+
+        const encoded=btoa(binary);
+
+        document.getElementById("baseResult")
+            .textContent=encoded;
+
+    }catch(error){
+
+        document.getElementById("baseResult")
+            .textContent="Encoding error.";
+
+    }
+
+}
+
+
+/* ==========================================
+   BASE64 DECODE
+========================================== */
+
+function decodeBase64(){
+
+    const input=document.getElementById("baseInput").value.trim();
+
+    try{
+
+        const binary=atob(input);
+
+        const bytes=Uint8Array.from(
+            binary,
+            char=>char.charCodeAt(0)
+        );
+
+        const decoded=new TextDecoder().decode(bytes);
+
+        document.getElementById("baseResult")
+            .textContent=decoded;
+
+    }catch(error){
+
+        document.getElementById("baseResult")
+            .textContent="Invalid Base64 data.";
+
+    }
+
+}
+
+
+/* ==========================================
+   CLEAR
+========================================== */
+
+function clearBase64(){
+
+    document.getElementById("baseInput").value="";
+
+    document.getElementById("baseResult")
+        .textContent="Result will appear here...";
+
+}
+
+
+/* ==========================================
+   RANDOM BYTES
+========================================== */
+
+function randomUint32(){
+
+    const array=new Uint32Array(1);
+
+    crypto.getRandomValues(array);
+
+    return array[0];
+
+}
+
+
+/* ==========================================
+   RANDOM INTEGER
+========================================== */
+
+function randomInteger(min,max){
+
+    if(min>max){
+
+        [min,max]=[max,min];
+
+    }
+
+    const range=max-min+1;
+
+    /*
+        Rejection sampling prevents simple modulo bias.
+    */
+
+    const limit=
+        Math.floor(4294967296/range)*range;
+
+    let value;
+
+    do{
+
+        value=randomUint32();
+
+    }while(value>=limit);
+
+    return min+(value%range);
+
+}
+
+
+/* ==========================================
+   GENERATE SALT
+========================================== */
+
+function generateSalt(){
+
+    const bytes=new Uint8Array(16);
+
+    crypto.getRandomValues(bytes);
+
+    const salt=
+        Array.from(bytes)
+        .map(b=>b.toString(16).padStart(2,"0"))
+        .join("");
+
+    document.getElementById("saltOutput")
+        .textContent=salt;
+
+    return salt;
+
+}
+
+
+/* ==========================================
+   SHA-256
+========================================== */
+
+async function sha256(text){
+
+    const data=new TextEncoder().encode(text);
+
+    const hashBuffer=
+        await crypto.subtle.digest(
+            "SHA-256",
+            data
+        );
+
+    const hashArray=
+        Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray
+        .map(b=>b.toString(16).padStart(2,"0"))
+        .join("");
+
+}
+
+
+/* ==========================================
+   GENERATE SEQUENCE
+========================================== */
+
+async function generateSequence(){
+
+    let count=parseInt(
+        document.getElementById("count").value
+    );
+
+    let min=parseInt(
+        document.getElementById("min").value
+    );
+
+    let max=parseInt(
+        document.getElementById("max").value
+    );
+
+    if(!Number.isFinite(count))
+        count=12;
+
+    if(!Number.isFinite(min))
+        min=1;
+
+    if(!Number.isFinite(max))
+        max=9999;
+
+    count=Math.min(Math.max(count,1),100);
+
+    const container=
+        document.getElementById("sequenceOutput");
+
+    container.innerHTML="";
+
+    const values=[];
+
+    for(let i=0;i<count;i++){
+
+        const value=randomInteger(min,max);
+
+        values.push(value);
+
+        const div=document.createElement("div");
+
+        div.className="number";
+
+        div.style.animationDelay=
+            `${i*40}ms`;
+
+        div.textContent=value;
+
+        container.appendChild(div);
+
+    }
+
+    let salt=
+        document.getElementById("saltOutput")
+        .textContent;
+
+    if(
+        !salt ||
+        salt==="Click NEW SALT or GENERATE"
+    ){
+
+        salt=generateSalt();
+
+    }
+
+    const sequenceText=
+        values.join("-");
+
+    const hash=
+        await sha256(
+            sequenceText+"."+salt
+        );
+
+    document.getElementById("hashOutput")
+        .textContent=hash;
+
+}
+
+
+/* ==========================================
+   COPY
+========================================== */
+
+async function copyResult(id){
+
+    let text="";
+
+    const element=document.getElementById(id);
+
+    if(id==="sequenceOutput"){
+
+        text=
+            Array.from(
+                element.querySelectorAll(".number")
+            )
+            .map(el=>el.textContent)
+            .join(" ");
+
+    }else{
+
+        text=element.textContent;
+
+    }
+
+    try{
+
+        await navigator.clipboard.writeText(text);
+
+        const original=element.textContent;
+
+        if(id!=="sequenceOutput"){
+
+            element.textContent="✓ COPIED";
+
+            setTimeout(()=>{
+
+                element.textContent=original;
+
+            },1000);
+
+        }
+
+    }catch(error){
+
+        alert("Copy failed. Please copy manually.");
+
+    }
+
+}
+
+
+/* ==========================================
+   TERMINAL TYPING
+========================================== */
+
+const terminalMessages=[
+
+    "system ready.",
+    "waiting for input...",
+    "entropy source connected.",
+    "random sequence engine ready.",
+    "base64 module loaded.",
+    "sha-256 module loaded.",
+    "all systems operational."
+
+];
+
+let messageIndex=0;
+let charIndex=0;
+
+function terminalType(){
+
+    const element=
+        document.getElementById("terminalText");
+
+    const message=
+        terminalMessages[messageIndex];
+
+    if(charIndex<message.length){
+
+        element.textContent+=
+            message.charAt(charIndex);
+
+        charIndex++;
+
+        setTimeout(terminalType,45);
+
+    }else{
+
+        setTimeout(()=>{
+
+            element.textContent="";
+            charIndex=0;
+
+            messageIndex=
+                (messageIndex+1)%
+                terminalMessages.length;
+
+            terminalType();
+
+        },1500);
+
+    }
+
+}
+
+terminalType();
+
+
+/* ==========================================
+   SCROLL VELOCITY EFFECT
+========================================== */
+
+let lastScroll=window.scrollY;
+let scrollVelocity=0;
+
+window.addEventListener("scroll",()=>{
+
+    scrollVelocity=
+        Math.abs(window.scrollY-lastScroll);
+
+    lastScroll=window.scrollY;
+
+    document.body.style.setProperty(
+        "--scroll-speed",
+        Math.min(scrollVelocity,30)
+    );
+
+});
+
+
+/* ==========================================
+   AUTO INITIAL GENERATION
+========================================== */
+
+generateSequence();
+
+</script>
+
+</body>
+</html>
+```
